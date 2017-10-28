@@ -37,25 +37,30 @@ $(SUBDIRS):
 
 .PHONY: artifacts
 artifacts:
-	mkdir -p ${LOCAL_ARTIFACTS_DIR}
-	repo manifest -r -o ${LOCAL_ARTIFACTS_DIR}/build.xml
-	cp ${ARTIFACTS_TMPL} "${LOCAL_ARTIFACTS_DIR}/artifacts.yaml"
-	sed -i=i.bak "s|{HUB}|${HUB}|" "${LOCAL_ARTIFACTS_DIR}/artifacts.yaml"
-	sed -i=i.bak "s|{TAG}|${TAG}|" "${LOCAL_ARTIFACTS_DIR}/artifacts.yaml"
-	rm "${LOCAL_ARTIFACTS_DIR}/artifacts.yaml=i.bak"
+	-mkdir -p ${LOCAL_ARTIFACTS_DIR}
+	-repo manifest -r -o ${LOCAL_ARTIFACTS_DIR}/build.xml
+	-cp ${ARTIFACTS_TMPL} "${LOCAL_ARTIFACTS_DIR}/artifacts.yaml"
+	-sed -i=i.bak "s|{HUB}|${HUB}|" "${LOCAL_ARTIFACTS_DIR}/artifacts.yaml"
+	-sed -i=i.bak "s|{TAG}|${TAG}|" "${LOCAL_ARTIFACTS_DIR}/artifacts.yaml"
+	-rm "${LOCAL_ARTIFACTS_DIR}/artifacts.yaml=i.bak"
+
+CLONE_DIR := $(shell mktemp -d)
+
+ifndef GIT_BRANCH
+$(error GIT_BRANCH is not set)
+endif
 
 .PHONY: green_build
 green_build:
-	CLONE_DIR=$(mktemp -d)
-	echo ${CLONE_DIR}
-	git config --global hub.protocol https
-	hub clone sebastienvas/istio-green-builds -b ${PULL_BASE_REF} ${CLONE_DIR}
-	cd ${CLONE_DIR}
-	git checkout -b ${TAG}
-	cp ${LOCAL_ARTIFACTS_DIR}/{artifacts.yaml,build.xml} .
-	git add .
-	git commit -m "New Green Build for ${TAG}"
-	git push
-	hub pull-request
+	-echo ${CLONE_DIR}
+	-git config --global hub.protocol https
+	-hub clone sebastienvas/istio-green-builds -b ${GIT_BRANCH} ${CLONE_DIR}
+	-cd ${CLONE_DIR}
+	-git checkout -b ${TAG}
+	-cp ${LOCAL_ARTIFACTS_DIR}/{artifacts.yaml,build.xml} .
+	-git add .
+	-git commit -m "New Green Build for ${TAG}"
+	-git push
+	-hub pull-request
 
 .PHONY: $(TOPTARGETS) $(SUBDIRS)
