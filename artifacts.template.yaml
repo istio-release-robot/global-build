@@ -1,0 +1,36 @@
+docker:
+  hub: {HUB}
+  tag: {TAG}
+  images:
+  - mixer
+  - mixer_debug
+  - grafana
+  - servicegraph
+  - proxy
+  - proxy_init
+  - proxy_debug
+  - pilot
+  - sidecar_initializer
+  - istio-ca
+binary:
+  base_directory: artifacts/
+  - name: istioctl-linux
+    location: istioctl
+  - name: istioctl-mac
+      location: istioctl
+  - name: istioctl-win.exe
+      location: istioctl
+  - name: istio-agent.deb
+    location: debs
+  - name: istio-auth-node-agent.deb
+    location: debs
+  - name: Istio-proxy.deb
+    location: debs
+  - name: istio-linux.tar.gz
+    location: archives
+  - name: istio-osx.tar.gz
+    location: archives
+  - name: istio_win.zip
+    location: archives
+
+
