@@ -42,6 +42,6 @@ echo "=== Pushing Artifacts ==="
 make push
 
 # GITHUB_TOKEN needs to be set
-if [[ -n ${GITHUB_TOKEN:-} ]]; then
-  make green_build
+if [[ ${CI:-} == 'bootstrap' ]]; then
+  GITHUB_TOKEN_PATH='/etc/github/oauth' GIT_BRANCH="$(PULL_BASE_REF)" make green_build
 fi

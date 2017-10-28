@@ -47,24 +47,31 @@ artifacts:
 	sed -i=i.bak "s|{TAG}|$(TAG)|" "$(LOCAL_ARTIFACTS_DIR)/artifacts.yaml"
 	rm "$(LOCAL_ARTIFACTS_DIR)/artifacts.yaml=i.bak"
 
-CLONE_DIR := $(shell mktemp -d)
 
+export GITHUB_TOKEN
 
 .PHONY: green_build
 green_build: artifacts
-ifdef GIT_BRANCH
+ifndef GIT_BRANCH
+	$(error GIT_BRANCH is not set)
+endif
+ifndef GITHUB_TOKEN_PATH
+	$(error GITHUB_TOKEN_PATH is not set)
+endif
+	$(eval CLONE_DIR := $(shell mktemp -d))
+	$(eval GITHUB_TOKEN := $(shell cat $(GITHUB_TOKEN_PATH)))
 	git config --global hub.protocol https
 	hub clone sebastienvas/istio-green-builds -b $(GIT_BRANCH) $(CLONE_DIR)
 	cd $(CLONE_DIR) \
-	&& git checkout -b $(TAG) \
+	&& hub checkout -b $(TAG) \
 	&& cp $(LOCAL_ARTIFACTS_DIR)/{artifacts.yaml,build.xml} . \
-	&& git add . \
-	&& git commit -m "New Green Build for $(TAG)" \
-	&& git push origin $(TAG) \
+	&& hub add . \
+	&& hub commit -m "New Green Build for $(TAG)" \
+	&& hub push origin $(TAG) \
 	&& hub pull-request -m "New Green Build for $(TAG)" \
-	&& rm -rf $(CLONE_DIR`)
-else
-	$(error GIT_BRANCH is not set)
-endif
+	&& rm -rf $(CLONE_DIR)
+
+.PHONY: create_pr
+create_pr: export GITHUB_TOKEN = $(shell cat $(GITHUB_TOKEN_PATH))
 
 .PHONY: $(TOPTARGETS) $(SUBDIRS)
