@@ -67,8 +67,7 @@ endif
 	&& cp $(LOCAL_ARTIFACTS_DIR)/{artifacts.yaml,build.xml} . \
 	&& hub add . \
 	&& hub commit -m "New Green Build for $(TAG)" \
-	&& hub push origin $(TAG) \
-	&& hub pull-request -m "New Green Build for $(TAG)" \
+	&& hub push origin $(TAG):$(GIT_BRANCH) \
 	&& rm -rf $(CLONE_DIR)
 
 .PHONY: create_pr
