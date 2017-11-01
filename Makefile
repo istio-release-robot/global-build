@@ -15,7 +15,7 @@
 SHELL := /bin/bash
 
 # Artifacts relate variables
-LOCAL_ARTIFACTS_DIR = $(abspath ../artifacts)
+LOCAL_ARTIFACTS_DIR := $(abspath ../artifacts)
 ARTIFACTS_TMPL := artifacts.template.yaml
 ARTIFACTS_DIR ?= $(LOCAL_ARTIFACTS_DIR)
 HUB ?= gcr.io/istio-testing
