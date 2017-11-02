@@ -23,11 +23,11 @@ TAG ?= $(shell cat istio.VERSION)-$(shell date '+%Y%m%d')-$(shell repo manifest 
 
 # Where to find other modules
 ISTIO_GO := ../go/src/istio.io
-GO_SRCS := $(ISTIO_GO)/auth $(ISTIO_GO)/pilot $(ISTIO_GO)/mixer #$(ISTIO_GO)/istio
-SUBDIRS := $(GO_SRCS) #../src/proxy
+GO_SRCS := $(ISTIO_GO)/istio
+SUBDIRS := $(GO_SRCS) ../src/proxy
 
 # Targets that need to be implemented by other modules
-TOPTARGETS := clean build setup test push
+TOPTARGETS := clean build test artifacts
 
 export GOPATH = $(shell realpath ../go)
 
