@@ -19,7 +19,7 @@ LOCAL_ARTIFACTS_DIR := $(abspath ../artifacts)
 ARTIFACTS_TMPL := artifacts.template.yaml
 ARTIFACTS_DIR ?= $(LOCAL_ARTIFACTS_DIR)
 HUB ?= gcr.io/istio-testing
-TAG ?= $(shell cat istio.VERSION)-$(shell date '+%Y%m%d')-$(shell repo manifest -r | sha256sum | head -c 10)
+TAG ?= $(shell date '+%Y%m%d')-$(shell repo manifest -r | sha256sum | head -c 10)
 
 # Where to find other modules
 ISTIO_GO := ../go/src/istio.io
