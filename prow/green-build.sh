@@ -19,6 +19,8 @@
 # Presubmit script triggered by Prow. #
 #######################################
 
+MAKEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
 # Exit immediately for non zero status
 set -e
 # Check unset variables
@@ -27,21 +29,21 @@ set -u
 set -x
 
 echo '=== Bazel Build ==='
-make build
+make -C ${MAKEDIR} build
 
 echo '=== Code Check ==='
-make check
+make -C ${MAKEDIR} check
 
 echo '=== Bazel Tests ==='
-make test
+make -C ${MAKEDIR} test
 
 echo '=== Build Artifacts ==='
-make artifacts
+make -C ${MAKEDIR} artifacts
 
 echo "=== Pushing Artifacts ==="
-make push
+make -C ${MAKEDIR} push
 
 # GITHUB_TOKEN needs to be set
 if [[ ${CI:-} == 'bootstrap' ]]; then
-  GITHUB_TOKEN_PATH='/etc/github/oauth' GIT_BRANCH="$(PULL_BASE_REF)" make green_build
+  GITHUB_TOKEN_PATH='/etc/github/oauth' GIT_BRANCH="$(PULL_BASE_REF)" make -C ${MAKEDIR} green_build
 fi
