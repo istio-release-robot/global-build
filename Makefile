@@ -27,7 +27,7 @@ GO_SRCS := $(ISTIO_GO)/istio
 SUBDIRS := $(GO_SRCS) ../src/proxy
 
 # Targets that need to be implemented by other modules
-TOPTARGETS := clean build test artifacts
+TOPTARGETS := check clean build test artifacts
 
 export GOPATH = $(shell realpath ../go)
 
