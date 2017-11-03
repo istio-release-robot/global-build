@@ -30,6 +30,7 @@ SUBDIRS := $(GO_SRCS) ../src/proxy
 TOPTARGETS := check clean build test artifacts
 
 export GOPATH = $(shell realpath ../go)
+export GITHUB_TOKEN
 
 $(TOPTARGETS): $(SUBDIRS)
 $(SUBDIRS):
@@ -38,7 +39,6 @@ $(SUBDIRS):
 clean:
 	rm -rf $(ARTIFACTS_DIR)
 
-.PHONY: artifacts
 artifacts:
 	mkdir -p $(LOCAL_ARTIFACTS_DIR)
 	repo manifest -r -o $(LOCAL_ARTIFACTS_DIR)/build.xml
@@ -47,11 +47,7 @@ artifacts:
 	sed -i=i.bak "s|{TAG}|$(TAG)|" "$(LOCAL_ARTIFACTS_DIR)/artifacts.yaml"
 	rm "$(LOCAL_ARTIFACTS_DIR)/artifacts.yaml=i.bak"
 
-
-export GITHUB_TOKEN
-
-.PHONY: green_build
-green_build: artifacts
+green_build:
 ifndef GIT_BRANCH
 	$(error GIT_BRANCH is not set)
 endif
@@ -70,7 +66,4 @@ endif
 	&& hub push origin $(TAG):$(GIT_BRANCH) \
 	&& rm -rf $(CLONE_DIR)
 
-.PHONY: create_pr
-create_pr: export GITHUB_TOKEN = $(shell cat $(GITHUB_TOKEN_PATH))
-
-.PHONY: $(TOPTARGETS) $(SUBDIRS)
+.PHONY: $(TOPTARGETS) $(SUBDIRS) green_build
