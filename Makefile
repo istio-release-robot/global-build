@@ -57,7 +57,7 @@ endif
 	$(eval CLONE_DIR := $(shell mktemp -d))
 	$(eval GITHUB_TOKEN := $(shell cat $(GITHUB_TOKEN_PATH)))
 	git config --global hub.protocol https
-	hub clone istio/istio-green-builds -b $(GIT_BRANCH) $(CLONE_DIR)
+	hub clone istio/green-builds -b $(GIT_BRANCH) $(CLONE_DIR)
 	cd $(CLONE_DIR) \
 	&& hub checkout -b $(TAG) \
 	&& cp $(LOCAL_ARTIFACTS_DIR)/{artifacts.yaml,build.xml} . \
