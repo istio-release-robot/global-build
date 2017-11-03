@@ -40,8 +40,8 @@ make -C ${MAKEDIR} test
 echo '=== Build Artifacts ==='
 make -C ${MAKEDIR} artifacts
 
-echo "=== Pushing Artifacts ==="
-make -C ${MAKEDIR} push
+#echo "=== Pushing Artifacts ==="
+#make -C ${MAKEDIR} push
 
 # GITHUB_TOKEN needs to be set
 if [[ ${CI:-} == 'bootstrap' ]]; then
