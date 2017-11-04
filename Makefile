@@ -50,8 +50,11 @@ green_build:
 ifndef GIT_BRANCH
 	$(error GIT_BRANCH is not set)
 endif
+ifdef NETRC
+	cp $(NETRC)/.netrc $(HOME)
+endif
 	$(eval CLONE_DIR := $(shell mktemp -d))
-	git clone https://github/com/istio/green-builds -b $(GIT_BRANCH) $(CLONE_DIR)
+	git clone https://github.com/istio/green-builds -b $(GIT_BRANCH) $(CLONE_DIR)
 	cd $(CLONE_DIR) \
 	&& git checkout -b $(TAG) \
 	&& cp $(LOCAL_ARTIFACTS_DIR)/{artifacts.yaml,build.xml} . \
