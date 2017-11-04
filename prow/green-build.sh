@@ -45,5 +45,5 @@ make -C ${MAKEDIR} artifacts
 
 # GITHUB_TOKEN needs to be set
 if [[ ${CI:-} == 'bootstrap' ]]; then
-  GITHUB_TOKEN_PATH='/etc/github/oauth' make -C ${MAKEDIR} green_build
+  make -C ${MAKEDIR} green_build
 fi

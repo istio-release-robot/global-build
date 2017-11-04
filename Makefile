@@ -30,7 +30,6 @@ SUBDIRS := $(GO_SRCS) ../src/proxy
 TOPTARGETS := check clean build test artifacts
 
 export GOPATH = $(shell realpath ../go)
-export GITHUB_TOKEN
 
 $(TOPTARGETS): $(SUBDIRS)
 $(SUBDIRS):
@@ -51,19 +50,14 @@ green_build:
 ifndef GIT_BRANCH
 	$(error GIT_BRANCH is not set)
 endif
-ifndef GITHUB_TOKEN_PATH
-	$(error GITHUB_TOKEN_PATH is not set)
-endif
 	$(eval CLONE_DIR := $(shell mktemp -d))
-	$(eval GITHUB_TOKEN := $(shell cat $(GITHUB_TOKEN_PATH)))
-	git config --global hub.protocol https
-	hub clone istio/green-builds -b $(GIT_BRANCH) $(CLONE_DIR)
+	git clone https://github/com/istio/green-builds -b $(GIT_BRANCH) $(CLONE_DIR)
 	cd $(CLONE_DIR) \
-	&& hub checkout -b $(TAG) \
+	&& git checkout -b $(TAG) \
 	&& cp $(LOCAL_ARTIFACTS_DIR)/{artifacts.yaml,build.xml} . \
-	&& hub add . \
-	&& hub commit -m "New Green Build for $(TAG)" \
-	&& hub push origin $(TAG):$(GIT_BRANCH) \
+	&& git add . \
+	&& git commit -m "New Green Build for $(TAG)" \
+	&& git push origin $(TAG):$(GIT_BRANCH) \
 	&& rm -rf $(CLONE_DIR)
 
 .PHONY: $(TOPTARGETS) $(SUBDIRS) green_build
