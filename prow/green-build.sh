@@ -28,6 +28,20 @@ set -u
 # Print commands
 set -x
 
+# Checking the build if already up to date
+SKIP_BUILD=true
+MANIFEST_DIR=$(mktemp -d)
+NEW_BUILD_MANIFEST="${MANIFEST_DIR}/new_build.xml"
+OLD_BUILD_MANIFEST="${MANIFEST_DIR}/old_build.xml"
+wget "https://raw.githubusercontent.com/istio/green-builds/${GIT_BRANCH}/build.xml" -O "${OLD_BUILD_MANIFEST}"
+repo manifest -r -o ${NEW_BUILD_MANIFEST}
+diff ${NEW_BUILD_MANIFEST} ${OLD_BUILD_MANIFEST} || SKIP_BUILD=false
+
+if [[ ${SKIP_BUILD} == true ]]; then
+  echo "Skipping Build: Green build up to date."
+  exit 0
+fi
+
 echo '=== Bazel Build ==='
 make -C ${MAKEDIR} build
 
