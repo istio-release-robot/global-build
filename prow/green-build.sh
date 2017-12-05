@@ -42,6 +42,31 @@ if [[ ${SKIP_BUILD} == true ]]; then
   exit 0
 fi
 
+# test_consistent_shas tests if the shas are consistent if not it exits
+# because grep fails to find the shas in the required files
+function test_consistent_shas() {
+
+    cd $MAKEDIR
+
+    ISTIO_API_SHA=`  grep istio/api         ${NEW_BUILD_MANIFEST} | cut -f 6 -d \"`
+    MIXERCLIENT_SHA=`grep istio/mixerclient ${NEW_BUILD_MANIFEST} | cut -f 6 -d \"`
+    PROXY_SHA=`      grep istio/proxy       ${NEW_BUILD_MANIFEST} | cut -f 6 -d \"`
+
+    #is the istio api sha being used in istio?
+    grep ISTIO_API.*$ISTIO_API_SHA ../go/src/istio.io/istio/istio_api.bzl
+
+    #is the istio api sha being used in mixerclient?
+    grep ISTIO_API.*$ISTIO_API_SHA ../src/mixerclient/repositories.bzl
+
+    #is the mixerclient sha being used in proxy?
+    grep MIXER_CLIENT.*$MIXERCLIENT_SHA ../src/proxy/src/envoy/mixer/repositories.bzl
+
+    #is the proxy sha being used in istio repo?
+    grep ISTIO_PROXY_BUCKET.=.*$PROXY_SHA ../go/src/istio.io/istio/WORKSPACE
+}
+
+test_consistent_shas
+
 echo '=== Bazel Build ==='
 make -C ${MAKEDIR} build
 
