@@ -45,15 +45,12 @@ fi
 function test_sha_in_repo() {
    SHA_REGEX=$1
    FILE=$2
-   set +e
 
    if ! grep -q $SHA_REGEX $FILE; then
      echo "$SHA_REGEX not found in $FILE" >&2
      # inconsistent shas, not a green build candidate, don't flag it as error
      exit 0
    fi
-
-   set -e
 }
 
 # test_consistent_shas tests if the shas are consistent if not it exits
@@ -79,8 +76,10 @@ function test_consistent_shas() {
     test_sha_in_repo ISTIO_PROXY_BUCKET.=.*$PROXY_SHA ../go/src/istio.io/istio/WORKSPACE
 }
 
+set +e
 test_consistent_shas
 
+set -e
 echo '=== Bazel Build ==='
 make -C ${MAKEDIR} build
 
