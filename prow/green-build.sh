@@ -42,6 +42,44 @@ if [[ ${SKIP_BUILD} == true ]]; then
   exit 0
 fi
 
+function test_sha_in_repo() {
+   SHA_REGEX=$1
+   FILE=$2
+
+   if ! grep -q $SHA_REGEX $FILE; then
+     echo "$SHA_REGEX not found in $FILE" >&2
+     # inconsistent shas, not a green build candidate, don't flag it as error
+     exit 0
+   fi
+}
+
+# test_consistent_shas tests if the shas are consistent if not it exits
+# because grep fails to find the shas in the required files
+function test_consistent_shas() {
+
+    cd $MAKEDIR
+
+    ISTIO_API_SHA=`  grep istio/api         ${NEW_BUILD_MANIFEST} | cut -f 6 -d \"`
+    MIXERCLIENT_SHA=`grep istio/mixerclient ${NEW_BUILD_MANIFEST} | cut -f 6 -d \"`
+    PROXY_SHA=`      grep istio/proxy       ${NEW_BUILD_MANIFEST} | cut -f 6 -d \"`
+
+    #is the istio api sha being used in istio?
+    test_sha_in_repo ISTIO_API.*$ISTIO_API_SHA ../go/src/istio.io/istio/istio_api.bzl
+
+    #is the istio api sha being used in mixerclient?
+    test_sha_in_repo ISTIO_API.*$ISTIO_API_SHA ../src/mixerclient/repositories.bzl
+
+    #is the mixerclient sha being used in proxy?
+    test_sha_in_repo MIXER_CLIENT.*$MIXERCLIENT_SHA ../src/proxy/src/envoy/mixer/repositories.bzl
+
+    #is the proxy sha being used in istio repo?
+    test_sha_in_repo ISTIO_PROXY_BUCKET.=.*$PROXY_SHA ../go/src/istio.io/istio/WORKSPACE
+}
+
+set +e
+test_consistent_shas
+
+set -e
 echo '=== Bazel Build ==='
 make -C ${MAKEDIR} build
 
