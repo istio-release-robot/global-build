@@ -64,16 +64,16 @@ function test_consistent_shas() {
     PROXY_SHA=`      grep istio/proxy       ${NEW_BUILD_MANIFEST} | cut -f 6 -d \"`
 
     #is the istio api sha being used in istio?
-    test_sha_in_repo ISTIO_API.*$ISTIO_API_SHA ../go/src/istio.io/istio/istio_api.bzl
+    test_sha_in_repo                $ISTIO_API_SHA  ../go/src/istio.io/istio/Gopkg.toml
 
     #is the istio api sha being used in mixerclient?
-    test_sha_in_repo ISTIO_API.*$ISTIO_API_SHA ../src/mixerclient/repositories.bzl
+    test_sha_in_repo    ISTIO_API.*$ISTIO_API_SHA   ../src/mixerclient/repositories.bzl
 
     #is the mixerclient sha being used in proxy?
     test_sha_in_repo MIXER_CLIENT.*$MIXERCLIENT_SHA ../src/proxy/src/envoy/mixer/repositories.bzl
 
     #is the proxy sha being used in istio repo?
-    test_sha_in_repo ISTIO_PROXY_BUCKET.=.*$PROXY_SHA ../go/src/istio.io/istio/WORKSPACE
+    test_sha_in_repo               $PROXY_SHA       ../go/src/istio.io/istio/pilot/docker/Dockerfile.proxy
 }
 
 set +e
