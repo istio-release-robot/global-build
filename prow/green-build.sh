@@ -86,9 +86,8 @@ make -C ${MAKEDIR} build
 echo '=== Code Check ==='
 make -C ${MAKEDIR} check
 
-# disabling temporarily needs to be enabled once we can figure out the tests
-echo '=== Bazel Tests ==='
-#make -C ${MAKEDIR} test
+echo '=== Tests ==='
+make -C ${MAKEDIR} test
 
 echo '=== Build Artifacts ==='
 make -C ${MAKEDIR} artifacts
