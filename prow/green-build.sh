@@ -76,9 +76,8 @@ function test_consistent_shas() {
     test_sha_in_repo               $PROXY_SHA       ../go/src/istio.io/istio/pilot/docker/Dockerfile.proxy
 }
 
-# disabling temporarily needs to be enabled once we can figure out the tests
 echo '=== Build ==='
-#make -C ${MAKEDIR} build
+make -C ${MAKEDIR} build
 
 set +e
 test_consistent_shas
@@ -87,13 +86,16 @@ set -e
 echo '=== Code Check ==='
 make -C ${MAKEDIR} check
 
+export KUBECONFIG=${HOME}/.kube/config
+if [[ ${CI:-} == 'bootstrap' ]]; then
+  export KUBECONFIG=/home/bootstrap/.kube/config
+fi
 # disabling temporarily needs to be enabled once we can figure out the tests
 echo '=== Bazel Tests ==='
 #make -C ${MAKEDIR} test
 
-# is this needed?
 echo '=== Build Artifacts ==='
-#make -C ${MAKEDIR} artifacts
+make -C ${MAKEDIR} artifacts
 
 # GITHUB_TOKEN needs to be set
 if [[ ${CI:-} == 'bootstrap' ]]; then
