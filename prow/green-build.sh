@@ -56,9 +56,10 @@ function test_sha_in_repo() {
 # test_consistent_shas tests if the shas are consistent if not it exits
 # because grep fails to find the shas in the required files
 function test_consistent_shas() {
-    ISTIO_API_SHA=`  grep istio/api         ${NEW_BUILD_MANIFEST} | cut -f 6 -d \"`
-    MIXERCLIENT_SHA=`grep istio/mixerclient ${NEW_BUILD_MANIFEST} | cut -f 6 -d \"`
-    PROXY_SHA=`      grep istio/proxy       ${NEW_BUILD_MANIFEST} | cut -f 6 -d \"`
+    local NEW_BLD_MANIFEST=$1
+    ISTIO_API_SHA=`  grep istio/api         ${NEW_BLD_MANIFEST} | cut -f 6 -d \"`
+    MIXERCLIENT_SHA=`grep istio/mixerclient ${NEW_BLD_MANIFEST} | cut -f 6 -d \"`
+    PROXY_SHA=`      grep istio/proxy       ${NEW_BLD_MANIFEST} | cut -f 6 -d \"`
 
     #is the istio api sha being used in istio?
     test_sha_in_repo                $ISTIO_API_SHA  ../go/src/istio.io/istio/Gopkg.toml
@@ -92,7 +93,7 @@ make -C ${MAKEDIR} artifacts
 # GITHUB_TOKEN needs to be set
 if [[ ${CI:-} == 'bootstrap' ]]; then
   set +e
-#  (cd $MAKEDIR ; test_consistent_shas)
+#  (cd $MAKEDIR ; test_consistent_shas ${NEW_BUILD_MANIFEST} )
   set -e
 
   make -C ${MAKEDIR} green_build
