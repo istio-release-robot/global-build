@@ -47,9 +47,9 @@ function test_sha_in_repo() {
    FILE=$2
 
    if ! grep -q $SHA_REGEX $FILE; then
-     echo "#### $SHA_REGEX not found in $FILE" >&2
+     echo "#### Inconsistent shas: $SHA_REGEX not found in $FILE" >&2
      # inconsistent shas, not a green build candidate, don't flag it as error
-     exit 0
+     # exit 0 TODO reenable when ready
    fi
 }
 
@@ -93,7 +93,7 @@ make -C ${MAKEDIR} artifacts
 # GITHUB_TOKEN needs to be set
 if [[ ${CI:-} == 'bootstrap' ]]; then
   set +e
-#  (cd $MAKEDIR ; test_consistent_shas ${NEW_BUILD_MANIFEST} )
+  (cd $MAKEDIR ; test_consistent_shas ${NEW_BUILD_MANIFEST} )
   set -e
 
   make -C ${MAKEDIR} green_build
