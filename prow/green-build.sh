@@ -85,7 +85,7 @@ echo '=== Code Check ==='
 make -C ${MAKEDIR} check
 
 echo '=== Tests ==='
-make -C ${MAKEDIR} test
+#make -C ${MAKEDIR} test
 
 echo '=== Build Artifacts ==='
 make -C ${MAKEDIR} artifacts
