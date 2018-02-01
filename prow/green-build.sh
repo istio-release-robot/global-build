@@ -82,7 +82,7 @@ echo '=== Build ==='
 make -C ${MAKEDIR} build
 
 echo '=== Code Check ==='
-make -C ${MAKEDIR} check
+#make -C ${MAKEDIR} check
 
 echo '=== Tests ==='
 #make -C ${MAKEDIR} test
